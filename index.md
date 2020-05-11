@@ -1,15 +1,22 @@
+# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 49; read: 2020-05-11 01:36:56; revision: 49; modified: 2020-05-11 01:36:56; importance: 0/5; urgency: 0/5; -->
 * [iSCSI in Deep - with Wireshark](#iscsi-in-deep---with-wireshark)
 * [ZFSSA](#zfssa)
-# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 22; read: 2020-05-11 01:21:14; revision: 14; modified: 2020-05-11 01:21:14; -->
+# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 34; read: 2020-05-11 01:36:56; revision: 20; modified: 2020-05-11 01:36:56; -->
 
 
  ## Main references
 
-[RFC 3720](https://tools.ietf.org/html/rfc3720#section-10.2.1.2])
+[RFC 7143 - Link](https://tools.ietf.org/html/rfc7143)
+
+[RFC 3720 - link](https://tools.ietf.org/html/rfc3720#section-10.2.1.2])
+
+[Internet Small Computer System Interface (iSCSI) Parameters](https://www.iana.org/assignments/iscsi-parameters/iscsi-parameters.xhtml)
+
 
 [iSCSI: The Universal Storage Connection - Oreilly Book ,2002](https://learning.oreilly.com/library/view/iscsi-the-universal/020178419X/ch05.xhtml)
 
 [Storage Networking Protocol Fundamentals By James Long - Cisco PressMay 2006- Oreilly Book link](https://learning.oreilly.com/library/view/storage-networking-protocol/1587051605/ch08.html)
+
 
 
 
@@ -33,7 +40,7 @@ iscsi.ahs.bidir.length|Bidirectional Read Data Length|Unsigned integer, 4 bytes
 iscsi.ahs.extended_cdb|AHS Extended CDB|Sequence of bytes
 iscsi.ahs.length|AHS Length|Unsigned integer, 2 bytes
 iscsi.ahs.type|AHS Type|Unsigned integer, 1 byte
-iscsi.ahs.unknown_blob|Unknown AHS blob|Sequence of bytes
+iscsi.ahs.unknown_blob|Unknown AHS blob|Sequence of bytesopsc
 iscsi.asyncevent|AsyncEvent|Unsigned integer, 1 byte
 iscsi.asynceventdata|AsyncEventData|Sequence of bytes
 iscsi.bufferOffset|BufferOffset|Unsigned integer, 4 bytes
@@ -158,8 +165,9 @@ There are three general classes of detected errors:
 
 The session restart, which must be used on protocol errors, can be used on any of the other failures also. Because only session restart is mandatory, some implementations are likely to have only that technique. That is, all error recovery can use what is called technique 0.
 
- ### [Section 7.1.1.  State Descriptions for Initiators and Targets(RFC3720)](https://tools.ietf.org/html/rfc3720#section-7.1.1)
+ ### [8.1.1.  State Descriptions for Initiators and Targets(RFC7143)](https://tools.ietf.org/html/rfc7143#section-8.1.1)
 
+![image](6-Storage.image.png)
 
  ### [RFC 3720 - OPCodes link](https://tools.ietf.org/html/rfc3720#section-10.2.1.2)
 
