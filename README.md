@@ -162,7 +162,7 @@ The session restart, which must be used on protocol errors, can be used on any o
  ### [Section 7.1.1.  State Descriptions for Initiators and Targets(RFC3720)](https://tools.ietf.org/html/rfc3720#section-7.1.1)
 
 
- ### [RFC 3720 - OPSCodes link](https://tools.ietf.org/html/rfc3720#section-10.2.1.2)
+ ### [RFC 3720 - OPCodes link](https://tools.ietf.org/html/rfc3720#section-10.2.1.2)
 
 ```
 !(0x02 or iscsi.opcode== 0x21) 
