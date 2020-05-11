@@ -1,13 +1,14 @@
+# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 55; read: 2020-05-11 09:00:03; revision: 55; modified: 2020-05-11 09:00:03; importance: 0/5; urgency: 0/5; -->
+* [iSCSI in Deep - with Wireshark](#iscsi-in-deep---with-wireshark)
+* [ZFSSA](#zfssa)
+# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 39; read: 2020-05-11 09:00:03; revision: 23; modified: 2020-05-11 09:00:03; -->
 
 
  ## Main references
 
-[RFC 7143 - Link](https://tools.ietf.org/html/rfc7143)
-
-[RFC 3720 - link](https://tools.ietf.org/html/rfc3720#section-10.2.1.2])
+[RFC 7143 -  Internet Small Computer System Interface (iSCSI) Protocol](https://tools.ietf.org/html/rfc7143)
 
 [Internet Small Computer System Interface (iSCSI) Parameters](https://www.iana.org/assignments/iscsi-parameters/iscsi-parameters.xhtml)
-
 
 [iSCSI: The Universal Storage Connection - Oreilly Book ,2002](https://learning.oreilly.com/library/view/iscsi-the-universal/020178419X/ch05.xhtml)
 
@@ -15,16 +16,12 @@
 
 
 
-
 * [Display Filters - Wirekshark page](https://wiki.wireshark.org/DisplayFilters)
 
 ```
 tcp.port eq 25 or icmp
-
- tcp.window_size == 0 && tcp.flags.reset != 1
-
- ip.src != 10.43.54.65 or ip.dst != 10.43.54.65
-
+tcp.window_size == 0 && tcp.flags.reset != 1
+ip.src != 10.43.54.65 or ip.dst != 10.43.54.65
 ```
 
  ### [WireShark Display Filter Reference: iSCSI - link](https://www.wireshark.org/docs/dfref/i/iscsi.html)
@@ -177,19 +174,14 @@ The session restart, which must be used on protocol errors, can be used on any o
    (Response PDUs).
 
 
+* To filter all the opcode in wireshark
+
 ```
-!(0x02 or iscsi.opcode== 0x21) 
 
-
-!(iscsi.opcode==0x20 or iscsi.opcode==0x21 or iscsi.opcode==0x22 or iscsi.opcode==0x23 or iscsi.opcode==0x24 or iscsi.opcode==0x25 or iscsi.opcode==0x26 or iscsi.opcode==0x31 or iscsi.opcode==0x32 or iscsi.opcode==0x3c or iscsi.opcode==0x3e or iscsi.opcode==0x3f or iscsi.opcode==0x00 or iscsi.opcode==0x01 or iscsi.opcode==0x02 or iscsi.opcode==0x03 or iscsi.opcode==0x04 or iscsi.opcode==0x05 or iscsi.opcode==0x06 or iscsi.opcode==0x10 or iscsi.opcode==0x1c or iscsi.opcode==0x1e)
+(iscsi.opcode==0x20 or iscsi.opcode==0x21 or iscsi.opcode==0x22 or iscsi.opcode==0x23 or iscsi.opcode==0x24 or iscsi.opcode==0x25 or iscsi.opcode==0x26 or iscsi.opcode==0x31 or iscsi.opcode==0x32 or iscsi.opcode==0x3c or iscsi.opcode==0x3e or iscsi.opcode==0x3f or iscsi.opcode==0x00 or iscsi.opcode==0x01 or iscsi.opcode==0x02 or iscsi.opcode==0x03 or iscsi.opcode==0x04 or iscsi.opcode==0x05 or iscsi.opcode==0x06 or iscsi.opcode==0x10 or iscsi.opcode==0x1c or iscsi.opcode==0x1e) && iscsi
 
 ```
 * Target OpCodes 
-
-To filter all the Target opcode
-```
-(iscsi.opcode==0x20 or iscsi.opcode==0x21 or iscsi.opcode==0x22 or iscsi.opcode==0x23 or iscsi.opcode==0x24 or iscsi.opcode==0x25 or iscsi.opcode==0x26 or iscsi.opcode==0x31 or iscsi.opcode==0x32 or iscsi.opcode==0x3c or iscsi.opcode==0x3e or iscsi.opcode==0x3f)
-```
 
 ```
 
@@ -208,13 +200,16 @@ To filter all the Target opcode
      0x3f Reject
 	 
 ```
+
+* wireshark to filter all the Target opcode 
+
+```
+(iscsi.opcode==0x20 or iscsi.opcode==0x21 or iscsi.opcode==0x22 or iscsi.opcode==0x23 or iscsi.opcode==0x24 or iscsi.opcode==0x25 or iscsi.opcode==0x26 or iscsi.opcode==0x31 or iscsi.opcode==0x32 or iscsi.opcode==0x3c or iscsi.opcode==0x3e or iscsi.opcode==0x3f) && iscsi
+```
+
 * Initiator OpCodes
 
-To filter all the Target opcode
-```
-(iscsi.opcode==0x00 or iscsi.opcode==0x01 or iscsi.opcode==0x02 or iscsi.opcode==0x03 or iscsi.opcode==0x04 or iscsi.opcode==0x05 or iscsi.opcode==0x06 or iscsi.opcode==0x10 or iscsi.opcode==0x1c or iscsi.opcode==0x1e)
 
-```
 
 ```
 	 Initiator opcodes defined in this specification are:
@@ -231,7 +226,15 @@ To filter all the Target opcode
 	  
 ```
 
-[10.4.2.  Status](https://tools.ietf.org/html/rfc3720#section-10.4.2)
+* WireShark To filter all the Initiator opcode
+
+```
+(iscsi.opcode==0x00 or iscsi.opcode==0x01 or iscsi.opcode==0x02 or iscsi.opcode==0x03 or iscsi.opcode==0x04 or iscsi.opcode==0x05 or iscsi.opcode==0x06 or iscsi.opcode==0x10 or iscsi.opcode==0x1c or iscsi.opcode==0x1e) && iscsi
+
+```
+ ### [10.4.2.  Status (RFC7143) ](https://tools.ietf.org/html/rfc7143#section-11.4.2)
+ 
+ 
 
 ```
 
@@ -260,5 +263,12 @@ To filter all the Target opcode
      0x80-0xff - Vendor specific
 	 
 ```
+ ### WireShark filter
+ 
+ ```
+(iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x02 or iscsi.scsiresponse.status==0x08 or iscsi.scsiresponse.status==0x18 or iscsi.scsiresponse.status==0x28 or iscsi.scsiresponse.status==0x30 or iscsi.scsiresponse.status==0x40 or iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x01 or iscsi.scsiresponse.status==0x80 or iscsi.scsiresponse.status==0xff) && iscsi
+```
 
+
+# ZFSSA <!-- Metadata: type: Note; created: 2020-05-08 14:51:21; reads: 9; read: 2020-05-10 23:38:02; revision: 2; modified: 2020-05-08 14:51:26; -->
 
