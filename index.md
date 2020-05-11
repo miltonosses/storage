@@ -1,7 +1,3 @@
-# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 49; read: 2020-05-11 01:36:56; revision: 49; modified: 2020-05-11 01:36:56; importance: 0/5; urgency: 0/5; -->
-* [iSCSI in Deep - with Wireshark](#iscsi-in-deep---with-wireshark)
-* [ZFSSA](#zfssa)
-# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 34; read: 2020-05-11 01:36:56; revision: 20; modified: 2020-05-11 01:36:56; -->
 
 
  ## Main references
@@ -169,7 +165,17 @@ The session restart, which must be used on protocol errors, can be used on any o
 
 ![image](6-Storage.image.png)
 
- ### [RFC 3720 - OPCodes link](https://tools.ietf.org/html/rfc3720#section-10.2.1.2)
+ ### [Opcode (RFC7143)](https://tools.ietf.org/html/rfc7143#section-11.2.1.2)
+
+
+
+   The Opcode indicates the type of iSCSI PDU the header encapsulates.
+
+   The Opcodes are divided into two categories: initiator Opcodes and
+   target Opcodes.  Initiator Opcodes are in PDUs sent by the initiator
+   (Request PDUs).  Target Opcodes are in PDUs sent by the target
+   (Response PDUs).
+
 
 ```
 !(0x02 or iscsi.opcode== 0x21) 
@@ -179,6 +185,11 @@ The session restart, which must be used on protocol errors, can be used on any o
 
 ```
 * Target OpCodes 
+
+To filter all the Target opcode
+```
+(iscsi.opcode==0x20 or iscsi.opcode==0x21 or iscsi.opcode==0x22 or iscsi.opcode==0x23 or iscsi.opcode==0x24 or iscsi.opcode==0x25 or iscsi.opcode==0x26 or iscsi.opcode==0x31 or iscsi.opcode==0x32 or iscsi.opcode==0x3c or iscsi.opcode==0x3e or iscsi.opcode==0x3f)
+```
 
 ```
 
@@ -198,6 +209,13 @@ The session restart, which must be used on protocol errors, can be used on any o
 	 
 ```
 * Initiator OpCodes
+
+To filter all the Target opcode
+```
+(iscsi.opcode==0x00 or iscsi.opcode==0x01 or iscsi.opcode==0x02 or iscsi.opcode==0x03 or iscsi.opcode==0x04 or iscsi.opcode==0x05 or iscsi.opcode==0x06 or iscsi.opcode==0x10 or iscsi.opcode==0x1c or iscsi.opcode==0x1e)
+
+```
+
 ```
 	 Initiator opcodes defined in this specification are:
 
@@ -243,6 +261,4 @@ The session restart, which must be used on protocol errors, can be used on any o
 	 
 ```
 
-
-# ZFSSA <!-- Metadata: type: Note; created: 2020-05-08 14:51:21; reads: 9; read: 2020-05-10 23:38:02; revision: 2; modified: 2020-05-08 14:51:26; -->
 
