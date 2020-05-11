@@ -142,7 +142,9 @@ iscsi.X|X|Boolean
 ```
 iscsi.keyvalue == "SessionType=Normal"
 
+WireShark filter to check if keyvalue.invalid is present
 
+iscsi.keyvalue.invalid && iscsi
 ```
 
 
@@ -177,6 +179,8 @@ The session restart, which must be used on protocol errors, can be used on any o
 * To filter all the opcode in wireshark
 
 ```
+WireShark filter to check if iscsi.opcode is present
+iscsi.opcode && iscsi
 
 (iscsi.opcode==0x20 or iscsi.opcode==0x21 or iscsi.opcode==0x22 or iscsi.opcode==0x23 or iscsi.opcode==0x24 or iscsi.opcode==0x25 or iscsi.opcode==0x26 or iscsi.opcode==0x31 or iscsi.opcode==0x32 or iscsi.opcode==0x3c or iscsi.opcode==0x3e or iscsi.opcode==0x3f or iscsi.opcode==0x00 or iscsi.opcode==0x01 or iscsi.opcode==0x02 or iscsi.opcode==0x03 or iscsi.opcode==0x04 or iscsi.opcode==0x05 or iscsi.opcode==0x06 or iscsi.opcode==0x10 or iscsi.opcode==0x1c or iscsi.opcode==0x1e) && iscsi
 
@@ -262,8 +266,11 @@ The session restart, which must be used on protocol errors, can be used on any o
 ```
 * WireShark filter for SCSI status of the command
 ```
-all SCSI status
+WireShark filter to check if iscsi.opcode is present
+iscsi.scsiresponse.status && iscsi
 
+
+All SCSI response status
 (iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x02 or iscsi.scsiresponse.status==0x08 or iscsi.scsiresponse.status==0x18 or iscsi.scsiresponse.status==0x28 or iscsi.scsiresponse.status==0x30 or iscsi.scsiresponse.status==0x40)
 
 
@@ -288,7 +295,7 @@ all status response
 
 ```
 
- ### [11.17.1.  Reason - RFC7143](https://tools.ietf.org/html/rfc7143#section-11.17.1)
+ ### [Reject - Reason - RFC7143](https://tools.ietf.org/html/rfc7143#section-11.17.1)
  
  
  
@@ -320,6 +327,9 @@ all status response
            buffer offset, LUN qualifying a TTT, and an invalid sequence
            number in a SNACK.
  ```
+ WireShark filter to check if iscsi.opcode is present
+ iscsi.reject.reason && iscsi
+
  (iscsi.reject.reason==0x00 or iscsi.reject.reason==0x02 or iscsi.reject.reason==0x08 or iscsi.reject.reason==0x18 or iscsi.reject.reason==0x28 or iscsi.reject.reason==0x30 or iscsi.reject.reason==0x40 or iscsi.reject.reason==0x00 or iscsi.reject.reason==0x01 or iscsi.reject.reason==0x80 or iscsi.reject.reason==0xff) && iscsi
  ```
 
