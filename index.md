@@ -1,7 +1,7 @@
-# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 55; read: 2020-05-11 09:00:03; revision: 55; modified: 2020-05-11 09:00:03; importance: 0/5; urgency: 0/5; -->
+# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 57; read: 2020-05-11 10:36:09; revision: 57; modified: 2020-05-11 10:36:09; importance: 0/5; urgency: 0/5; -->
 * [iSCSI in Deep - with Wireshark](#iscsi-in-deep---with-wireshark)
 * [ZFSSA](#zfssa)
-# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 39; read: 2020-05-11 09:00:03; revision: 23; modified: 2020-05-11 09:00:03; -->
+# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 45; read: 2020-05-11 10:36:09; revision: 24; modified: 2020-05-11 10:36:09; -->
 
 
  ## Main references
@@ -233,8 +233,6 @@ The session restart, which must be used on protocol errors, can be used on any o
 
 ```
  ### [10.4.2.  Status (RFC7143) ](https://tools.ietf.org/html/rfc7143#section-11.4.2)
- 
- 
 
 ```
 
@@ -249,8 +247,7 @@ The session restart, which must be used on protocol errors, can be used on any o
      0x18 RESERVATION CONFLICT
      0x28 TASK SET FULL
      0x30 ACA ACTIVE
-     0x40 TASK ABORTED
-
+	 0x40 TASK ABORTED
 
 10.4.3.  Response
 
@@ -263,12 +260,12 @@ The session restart, which must be used on protocol errors, can be used on any o
      0x80-0xff - Vendor specific
 	 
 ```
- ### WireShark filter
+ ### WireShark filter for all the status
  
- ```
+```
 (iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x02 or iscsi.scsiresponse.status==0x08 or iscsi.scsiresponse.status==0x18 or iscsi.scsiresponse.status==0x28 or iscsi.scsiresponse.status==0x30 or iscsi.scsiresponse.status==0x40 or iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x01 or iscsi.scsiresponse.status==0x80 or iscsi.scsiresponse.status==0xff) && iscsi
 ```
 
 
-# ZFSSA <!-- Metadata: type: Note; created: 2020-05-08 14:51:21; reads: 9; read: 2020-05-10 23:38:02; revision: 2; modified: 2020-05-08 14:51:26; -->
+# ZFSSA <!-- Metadata: type: Note; created: 2020-05-08 14:51:21; reads: 13; read: 2020-05-11 10:35:23; revision: 2; modified: 2020-05-08 14:51:26; -->
 
