@@ -1,7 +1,7 @@
-# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 57; read: 2020-05-11 10:36:09; revision: 57; modified: 2020-05-11 10:36:09; importance: 0/5; urgency: 0/5; -->
+# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 61; read: 2020-05-11 10:40:02; revision: 61; modified: 2020-05-11 10:40:02; importance: 0/5; urgency: 0/5; -->
 * [iSCSI in Deep - with Wireshark](#iscsi-in-deep---with-wireshark)
 * [ZFSSA](#zfssa)
-# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 45; read: 2020-05-11 10:36:09; revision: 24; modified: 2020-05-11 10:36:09; -->
+# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 47; read: 2020-05-11 10:40:02; revision: 26; modified: 2020-05-11 10:40:02; -->
 
 
  ## Main references
@@ -260,11 +260,68 @@ The session restart, which must be used on protocol errors, can be used on any o
      0x80-0xff - Vendor specific
 	 
 ```
- ### WireShark filter for all the status
+* WireShark filter for SCSI status of the command
+```
+all SCSI status
+
+(iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x02 or iscsi.scsiresponse.status==0x08 or iscsi.scsiresponse.status==0x18 or iscsi.scsiresponse.status==0x28 or iscsi.scsiresponse.status==0x30 or iscsi.scsiresponse.status==0x40)
+
+
+	 0x08 BUSY
+     0x28 TASK SET FULL
+     0x18 RESERVATION CONFLICT
+	 0x40 TASK ABORTED
+
+(iscsi.scsiresponse.status==0x08 or iscsi.scsiresponse.status==0x28 or iscsi.scsiresponse.status==0x18 or iscsi.scsiresponse.status==0x40) && iscsi
+```
+
+ * WireShark filter for status response
  
 ```
-(iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x02 or iscsi.scsiresponse.status==0x08 or iscsi.scsiresponse.status==0x18 or iscsi.scsiresponse.status==0x28 or iscsi.scsiresponse.status==0x30 or iscsi.scsiresponse.status==0x40 or iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x01 or iscsi.scsiresponse.status==0x80 or iscsi.scsiresponse.status==0xff) && iscsi
+all status response
+
+( iscsi.scsiresponse.status==0x00 or iscsi.scsiresponse.status==0x01 or iscsi.scsiresponse.status==0x80 or iscsi.scsiresponse.status==0xff) && iscsi
+
+
+     0x00 - Command Completed at Target
+(iscsi.scsiresponse.status==0x00 ) && iscsi
+
 ```
+
+ ### [11.17.1.  Reason - RFC7143](https://tools.ietf.org/html/rfc7143#section-11.17.1)
+ 
+ 
+ 
+   Code (hex)| Explanation|Can the original PDU be resent?  
+   ---|---|---
+   0x01 | Reserved                               | no             
+   0x02 | Data (payload) digest error            | yes (Note 1)   
+   0x03 | SNACK Reject                           | yes            
+   0x04 | Protocol Error (e.g., SNACK Request for  a status that was already acknowledged)| no             
+   0x05 | Command not supported                  | no             
+   0x06 | Immediate command reject - too many  immediate commands  | yes            
+   0x07 | Task in progress                       | no             
+   0x08 | Invalid data ack                       | no             
+   0x09 | Invalid PDU field                      | no (Note 2)    
+   0x0a | Long op reject - Can't generate Target Transfer Tag - out of resources  | yes            
+   0x0b | Deprecated; MUST NOT be used           | N/A (Note 3)   
+   0x0c | Waiting for Logout                     | no             
+ 
+ 
+   Note 1: For iSCSI, Data-Out PDU retransmission is only done if the
+           target requests retransmission with a recovery R2T.  However,
+           if this is the data digest error on immediate data, the
+           initiator may choose to retransmit the whole PDU, including
+           the immediate data.
+
+   Note 2: A target should use this reason code for all invalid values
+           of PDU fields that are meant to describe a task, a response,
+           or a data transfer.  Some examples are invalid TTT/ITT,
+           buffer offset, LUN qualifying a TTT, and an invalid sequence
+           number in a SNACK.
+ ```
+ (iscsi.reject.reason==0x00 or iscsi.reject.reason==0x02 or iscsi.reject.reason==0x08 or iscsi.reject.reason==0x18 or iscsi.reject.reason==0x28 or iscsi.reject.reason==0x30 or iscsi.reject.reason==0x40 or iscsi.reject.reason==0x00 or iscsi.reject.reason==0x01 or iscsi.reject.reason==0x80 or iscsi.reject.reason==0xff) && iscsi
+ ```
 
 
 # ZFSSA <!-- Metadata: type: Note; created: 2020-05-08 14:51:21; reads: 13; read: 2020-05-11 10:35:23; revision: 2; modified: 2020-05-08 14:51:26; -->
