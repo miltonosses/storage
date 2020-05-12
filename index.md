@@ -1,18 +1,18 @@
-# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 61; read: 2020-05-11 10:40:02; revision: 61; modified: 2020-05-11 10:40:02; importance: 0/5; urgency: 0/5; -->
+# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 71; read: 2020-05-12 12:47:48; revision: 71; modified: 2020-05-12 12:47:48; importance: 0/5; urgency: 0/5; -->
 * [iSCSI in Deep - with Wireshark](#iscsi-in-deep---with-wireshark)
 * [ZFSSA](#zfssa)
-# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 47; read: 2020-05-11 10:40:02; revision: 26; modified: 2020-05-11 10:40:02; -->
-
+# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 54; read: 2020-05-12 12:47:48; revision: 31; modified: 2020-05-12 12:47:48; -->
+    
 
  ## Main references
 
-[RFC 7143 -  Internet Small Computer System Interface (iSCSI) Protocol](https://tools.ietf.org/html/rfc7143)
+[RFC 7143 -  Internet Small Computer System Interface (iSCSI) Protocol](https://tools.ietf.org/html/rfc7143 )
 
-[Internet Small Computer System Interface (iSCSI) Parameters](https://www.iana.org/assignments/iscsi-parameters/iscsi-parameters.xhtml)
+[Internet Small Computer System Interface (iSCSI) Parameters](https://www.iana.org/assignments/iscsi-parameters/iscsi-parameters.xhtml )
 
-[iSCSI: The Universal Storage Connection - Oreilly Book ,2002](https://learning.oreilly.com/library/view/iscsi-the-universal/020178419X/ch05.xhtml)
+[iSCSI: The Universal Storage Connection - Oreilly Book ,2002](https://learning.oreilly.com/library/view/iscsi-the-universal/020178419X/ch05.xhtml )
 
-[Storage Networking Protocol Fundamentals By James Long - Cisco PressMay 2006- Oreilly Book link](https://learning.oreilly.com/library/view/storage-networking-protocol/1587051605/ch08.html)
+[Storage Networking Protocol Fundamentals By James Long - Cisco PressMay 2006- Oreilly Book link](https://learning.oreilly.com/library/view/storage-networking-protocol/1587051605/ch08.html )
 
 
 
@@ -148,6 +148,32 @@ iscsi.keyvalue.invalid && iscsi
 ```
 
 
+
+ ### In iSCSI there are two main operations read and write see the flow (thanks DELL/EMC [iSCSI-Primer](https://www.bswd.com/iSCSI-Primer.pdf))
+  
+ 1.  **Read**
+    ![image](6-Storage.__image.png)
+ 2.  **Write**
+    ![image](6-Storage.___image.png)
+
+ * You can follow the iSCSI flow using the initiator task tag (ITT)
+ 
+  **Initiator Task Tag (ITT)—.** [Storage Networking Protocol Fundamentals]( https://learning.oreilly.com/library/view/storage-networking-protocol/1587051605/ch08.html ) This is 32 bits long. It contains a tag assigned by the initiator. An ITT is assigned to each iSCSI task. Likewise, an ITT is assigned to each SCSI task. A SCSI task can represent a single SCSI command or multiple linked commands. Each SCSI command can have many SCSI activities associated with it. A SCSI task encompasses all activities associated with a SCSI command or multiple linked commands. Likewise, an ITT that represents a SCSI task also encompasses all associated activities of the SCSI command(s). An ITT value is unique only within the context of the current session. The iSCSI ITT is similar in function to the FC fully qualified exchange identifier (FQXID).
+ 
+ 
+ * You must filter in wireshark using the field iscsi.initiatortasktag == 0xa1500f4a to follow the read or write operations.
+
+  ![image](6-Storage._image.png)
+
+ * You can create a flow graph with wirekshark
+
+  ![image](6-Storage.____image.png)
+
+ * Check - Limit do display filter
+
+  ![image](6-Storage._____image.png)
+
+
  ### [Chapter 11. Error Handling oreilly book link](https://learning.oreilly.com/library/view/iscsi-the-universal/020178419X/ch11.xhtml)
 
 There are three general classes of detected errors:
@@ -160,9 +186,10 @@ There are three general classes of detected errors:
 
 The session restart, which must be used on protocol errors, can be used on any of the other failures also. Because only session restart is mandatory, some implementations are likely to have only that technique. That is, all error recovery can use what is called technique 0.
 
- ### [8.1.1.  State Descriptions for Initiators and Targets(RFC7143)](https://tools.ietf.org/html/rfc7143#section-8.1.1)
 
-![image](6-Storage.image.png)
+
+
+
 
  ### [Opcode (RFC7143)](https://tools.ietf.org/html/rfc7143#section-11.2.1.2)
 
