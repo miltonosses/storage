@@ -1,7 +1,7 @@
-# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 71; read: 2020-05-12 12:47:48; revision: 71; modified: 2020-05-12 12:47:48; importance: 0/5; urgency: 0/5; -->
-* [iSCSI in Deep - with Wireshark](#iscsi-in-deep---with-wireshark)
+# 6- Storage <!-- Metadata: type: Outline; created: 2020-05-08 14:50:56; reads: 89; read: 2020-05-13 22:58:47; revision: 89; modified: 2020-05-13 22:58:47; importance: 0/5; urgency: 0/5; -->
+* [iSCSI in Deep - with Wireshark and tshark](#iscsi-in-deep---with-wireshark-and-tshark) <kbd>iscsi</kbd> <kbd>wireshark</kbd>
 * [ZFSSA](#zfssa)
-# iSCSI in Deep - with Wireshark <!-- Metadata: type: Note; created: 2020-05-10 23:38:30; reads: 54; read: 2020-05-12 12:47:48; revision: 31; modified: 2020-05-12 12:47:48; -->
+# iSCSI in Deep - with Wireshark and tshark <!-- Metadata: type: Note; tags: iscsi,wireshark; created: 2020-05-10 23:38:30; reads: 68; read: 2020-05-13 22:58:47; revision: 39; modified: 2020-05-13 22:58:47; -->
     
 
  ## Main references
@@ -16,7 +16,41 @@
 
 
 
-* [Display Filters - Wirekshark page](https://wiki.wireshark.org/DisplayFilters)
+ ### iSCSI PDU Formats 
+ iSCSI PDU Formats: iSCSI uses one general PDU format for many purposes. The specific format of an iSCSI PDU is determined by the type of PDU. [RFC 7143](https://tools.ietf.org/html/rfc7143 )  defines numerous PDU types to facilitate communication between initiators and targets. 
+
+ * The primary PDU types include:  
+    * login request
+    * login response
+    * SCSI command
+    * SCSI response
+    * data-out
+    * data-in
+    * ready to transfer (R2T)
+    * selective negative acknowledgment (SNACK) request
+    * task management function (TMF) request
+    * TMF response, and reject. 
+
+ All iSCSI PDUs begin with a basic header segment (BHS). The BHS may be followed by one or more additional header segments (AHS), a header-digest, a data segment, or a data-digest. The data-digest may be present only if the data segment is present. 
+ 
+
+
+
+ ### In iSCSI there are two important operations read and write to manage the data see PDUs (BHS) and the flow of those operations (thanks DELL/EMC [iSCSI-Primer](https://www.bswd.com/iSCSI-Primer.pdf))
+  
+ 1.  **Read**
+
+   ![image](6-Storage.__________image.png)
+---
+   ![image](6-Storage.__image.png)
+
+ 2.  **Write**
+
+  ![image](6-Storage._________image.png)
+---
+  ![image](6-Storage.___image.png)
+
+* From the basic to [Display Filters - Wirekshark page](https://wiki.wireshark.org/DisplayFilters)
 
 ```
 tcp.port eq 25 or icmp
@@ -24,7 +58,7 @@ tcp.window_size == 0 && tcp.flags.reset != 1
 ip.src != 10.43.54.65 or ip.dst != 10.43.54.65
 ```
 
- ### [WireShark Display Filter Reference: iSCSI - link](https://www.wireshark.org/docs/dfref/i/iscsi.html)
+ ### To filter filds in iSCSI - [WireShark Display Filter Reference: iSCSI - link](https://www.wireshark.org/docs/dfref/i/iscsi.html)
 
 Field name|Description|Type
  --- | --- | ---
@@ -136,27 +170,21 @@ iscsi.writedata|WriteData|Sequence of bytes
 iscsi.X|X|Boolean
 
 
-
-* [Display Filter Reference: iSCSI - Wireshark page](https://www.wireshark.org/docs/dfref/i/iscsi.html)
+* some expamples [Display Filter Reference: iSCSI - Wireshark page](https://www.wireshark.org/docs/dfref/i/iscsi.html)
 
 ```
+* To check the iSCSI sessionType as normal
+
 iscsi.keyvalue == "SessionType=Normal"
 
-WireShark filter to check if keyvalue.invalid is present
+* WireShark filter to check if keyvalue.invalid is present
 
-iscsi.keyvalue.invalid && iscsi
+iscsi.keyvalue.invalid 
 ```
 
 
-
- ### In iSCSI there are two main operations read and write see the flow (thanks DELL/EMC [iSCSI-Primer](https://www.bswd.com/iSCSI-Primer.pdf))
-  
- 1.  **Read**
-    ![image](6-Storage.__image.png)
- 2.  **Write**
-    ![image](6-Storage.___image.png)
-
- * You can follow the iSCSI flow using the initiator task tag (ITT)
+ ### Using ITT to filter the secuence of read and write operations.
+ * You must follow the iSCSI data flow using the initiator task tag (ITT) field.
  
   **Initiator Task Tag (ITT)—.** [Storage Networking Protocol Fundamentals]( https://learning.oreilly.com/library/view/storage-networking-protocol/1587051605/ch08.html ) This is 32 bits long. It contains a tag assigned by the initiator. An ITT is assigned to each iSCSI task. Likewise, an ITT is assigned to each SCSI task. A SCSI task can represent a single SCSI command or multiple linked commands. Each SCSI command can have many SCSI activities associated with it. A SCSI task encompasses all activities associated with a SCSI command or multiple linked commands. Likewise, an ITT that represents a SCSI task also encompasses all associated activities of the SCSI command(s). An ITT value is unique only within the context of the current session. The iSCSI ITT is similar in function to the FC fully qualified exchange identifier (FQXID).
  
@@ -173,6 +201,83 @@ iscsi.keyvalue.invalid && iscsi
 
   ![image](6-Storage._____image.png)
 
+
+ ### You can check the DataSN in PDU to check the secuence of Data In (Read) or Data Out(Write) 
+
+  * **Data Sequence Number (DataSN):**. This is 32 bits long. This field uniquely identifies each Data-Out PDU within each sequence of PDUs. The DataSN is similar in function to the FC SEQ_ID. Each SCSI write command is satisfied with one or more sequences of PDUs. Each PDU sequence is identified by the ITT (for unsolicited data) or the TTT (for solicited data). This field is incremented by one for each Data-Out PDU transmitted within a sequence. A retransmitted Data-Out PDU carries the same DataSN as the original PDU. The counter is reset for each new sequence within the context a single command.
+  
+  * In below example I filtered by iscsi.initiatortasktag == 0xa15c2c72 and you can see the secuense of DataSN field.
+
+  ![image](6-Storage.______image.png)
+---  
+  ![image](6-Storage._______image.png)
+
+
+ ### Right I used as exmple a wrong(bad) iscsi 
+
+ ## Using tshark command line of Wireshark. 
+
+ [Instant Traffic Analysis with Tshark How-to - Oreilly book](https://learning.oreilly.com/library/view/instant-traffic-analysis/9781782165385/)
+
+ [T-Shark Usage Examples ](https://www.cellstream.com/reference-reading/tipsandtricks/272-t-shark-usage-examples)
+
+ ### 1. Check all the package that are wrong/bad using tcp.analysis.flags  parameter and  create a new pcap output file.
+
+```
+$ tshark -r snoop-6.net0 -w sol6tcp.analysis.flags_iscsi.initiatortasktag.out  tcp.analysis.flags
+
+$ tshark -r tcp_analysis_flags.cap |wc -l
+43606
+
+```
+
+ ### 2. Create a new filter with package that only have the iscsi.initiatortasktag
+
+
+```
+tshark -r tcp_analysis_flags.cap -T fields -e frame.time -e ip.src -e ip.dst -e iscsi.initiatortasktag -e col.Info iscsi.initiatortasktag
+(..)
+"Apr 28, 2020 12:11:52.316020000 UTC"   192.168.1.2     192.168.1.50    0x188c1020      [TCP ACKed unseen segment] [TCP Previous segment not captured] Ready To Transfer
+"Apr 28, 2020 12:11:52.318354000 UTC"   192.168.1.50    192.168.1.2     0x188c1020      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.318425000 UTC"   192.168.1.50    192.168.1.2     0x188c1020      [TCP ACKed unseen segment] SCSI Data Out
+"Apr 28, 2020 12:11:52.318971000 UTC"   192.168.1.50    192.168.1.2     0x1888241a      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.318994000 UTC"   192.168.1.50    192.168.1.2     0x1888241a      [TCP ACKed unseen segment] SCSI Data Out
+"Apr 28, 2020 12:11:52.320624000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.320670000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] SCSI Data Out
+"Apr 28, 2020 12:11:52.321565000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.321591000 UTC"   192.168.1.2     192.168.1.50    0x188f284d      [TCP ACKed unseen segment] [TCP Previous segment not captured] Ready To Transfer
+"Apr 28, 2020 12:11:52.321905000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+
+```
+ ### 3. Or just show the iscsi ITT (iscsi.initiatortasktag) value.
+
+```
+tshark -r tcp_analysis_flags.cap -T fields -e iscsi.initiatortasktag  iscsi.initiatortasktag
+0xfaea01a3
+0xfaeb26b2
+0xfaec1f45
+0xfb011496
+0xfb021c4b
+0xfb0305e4
+0xfb042033
+0xfb1a0d22
+0xfb2b2a9a
+0xfb2c13d9
+0xfb4709fe
+0xfb5b1d58
+0xfc572ba2
+0xfc821c4b
+0xfc831ac8
+(...)
+```
+
+  ### Then now we can check more in detail each flow with the iscsi.initiatortasktag value
+
+```
+$ tshark -r tcp_analysis_flags.cap -T fields -e frame.time -e ip.src -e ip.dst -e iscsi.datasn -e iscsi.initiatortasktag -e iscsi.opcode  -e col.Info iscsi.initiatortasktag==0xad25019d
+
+"Apr 28, 2020 12:07:45.318989000 UTC"   192.168.1.2     192.168.1.50    0x00000046      0xad25019d      0x00000025      [TCP Previous segment not captured] SCSI Data In
+```
 
  ### [Chapter 11. Error Handling oreilly book link](https://learning.oreilly.com/library/view/iscsi-the-universal/020178419X/ch11.xhtml)
 
