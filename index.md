@@ -237,16 +237,16 @@ $ tshark -r tcp_analysis_flags.cap |wc -l
 ```
 tshark -r tcp_analysis_flags.cap -T fields -e frame.time -e ip.src -e ip.dst -e iscsi.initiatortasktag -e col.Info iscsi.initiatortasktag
 (..)
-"Apr 28, 2020 12:11:52.316020000 UTC"   192.168.1.2     192.168.1.50    0x188c1020      [TCP ACKed unseen segment] [TCP Previous segment not captured] Ready To Transfer
-"Apr 28, 2020 12:11:52.318354000 UTC"   192.168.1.50    192.168.1.2     0x188c1020      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
-"Apr 28, 2020 12:11:52.318425000 UTC"   192.168.1.50    192.168.1.2     0x188c1020      [TCP ACKed unseen segment] SCSI Data Out
-"Apr 28, 2020 12:11:52.318971000 UTC"   192.168.1.50    192.168.1.2     0x1888241a      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
-"Apr 28, 2020 12:11:52.318994000 UTC"   192.168.1.50    192.168.1.2     0x1888241a      [TCP ACKed unseen segment] SCSI Data Out
-"Apr 28, 2020 12:11:52.320624000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
-"Apr 28, 2020 12:11:52.320670000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] SCSI Data Out
-"Apr 28, 2020 12:11:52.321565000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
-"Apr 28, 2020 12:11:52.321591000 UTC"   192.168.1.2     192.168.1.50    0x188f284d      [TCP ACKed unseen segment] [TCP Previous segment not captured] Ready To Transfer
-"Apr 28, 2020 12:11:52.321905000 UTC"   192.168.1.50    192.168.1.2     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.316020000 UTC"   192.168.1.10     192.168.1.150    0x188c1020      [TCP ACKed unseen segment] [TCP Previous segment not captured] Ready To Transfer
+"Apr 28, 2020 12:11:52.318354000 UTC"   192.168.1.150    192.168.1.10     0x188c1020      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.318425000 UTC"   192.168.1.150    192.168.1.10     0x188c1020      [TCP ACKed unseen segment] SCSI Data Out
+"Apr 28, 2020 12:11:52.318971000 UTC"   192.168.1.150    192.168.1.10     0x1888241a      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.318994000 UTC"   192.168.1.150    192.168.1.10     0x1888241a      [TCP ACKed unseen segment] SCSI Data Out
+"Apr 28, 2020 12:11:52.320624000 UTC"   192.168.1.150    192.168.1.10     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.320670000 UTC"   192.168.1.150    192.168.1.10     0x1891065e      [TCP ACKed unseen segment] SCSI Data Out
+"Apr 28, 2020 12:11:52.321565000 UTC"   192.168.1.150    192.168.1.10     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.321591000 UTC"   192.168.1.10     192.168.1.150    0x188f284d      [TCP ACKed unseen segment] [TCP Previous segment not captured] Ready To Transfer
+"Apr 28, 2020 12:11:52.321905000 UTC"   192.168.1.150    192.168.1.10     0x1891065e      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
 
 ```
  ### 3. Or just show the iscsi ITT (iscsi.initiatortasktag) value.
@@ -274,9 +274,15 @@ tshark -r tcp_analysis_flags.cap -T fields -e iscsi.initiatortasktag  iscsi.init
   ### Then now we can check more in detail each flow with the iscsi.initiatortasktag value
 
 ```
-$ tshark -r tcp_analysis_flags.cap -T fields -e frame.time -e ip.src -e ip.dst -e iscsi.datasn -e iscsi.initiatortasktag -e iscsi.opcode  -e col.Info iscsi.initiatortasktag==0xad25019d
+tshark -r tcp_analysis_flags.cap -T fields -e frame.time -e ip.src -e ip.dst -e iscsi.datasn -e iscsi.initiatortasktag -e iscsi.opcode  -e col.Info iscsi.initiatortasktag==0x188c1020
 
-"Apr 28, 2020 12:07:45.318989000 UTC"   192.168.1.2     192.168.1.50    0x00000046      0xad25019d      0x00000025      [TCP Previous segment not captured] SCSI Data In
+
+"Apr 28, 2020 12:11:52.312524000 UTC"   192.168.1.150    192.168.1.10     0x00000000      0x188c1020      0x00000005      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.316020000 UTC"   192.168.1.10     192.168.1.150            		  0x188c1020      0x00000031      [TCP ACKed unseen segment] [TCP Previous segment not captured] Ready To Transfer
+"Apr 28, 2020 12:11:52.318354000 UTC"   192.168.1.150    192.168.1.10     0x00000006      0x188c1020      0x00000005      [TCP ACKed unseen segment] [TCP Previous segment not captured] SCSI Data Out
+"Apr 28, 2020 12:11:52.318425000 UTC"   192.168.1.150    192.168.1.10     0x00000007      0x188c1020      0x00000005      [TCP ACKed unseen segment] SCSI Data Out
+
+Above example show iscsi.datasn value what is out of sequence.
 ```
 
  ### [Chapter 11. Error Handling oreilly book link](https://learning.oreilly.com/library/view/iscsi-the-universal/020178419X/ch11.xhtml)
